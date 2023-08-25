@@ -1,2 +1,2 @@
 # Kursownia
-Telegram bot for check currency exchange rate
+Telegram bot for currency exchange rate checks
