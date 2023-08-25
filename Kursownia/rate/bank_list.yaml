@@ -1,0 +1,8 @@
+version: 0.1
+type: bank_list
+data:
+  - bank_name: "nbp"
+    country: "Poland"
+    main_currency: "pln"
+    link: "https://api.nbp.pl/api/exchangerates/tables/C?format=json"
+    auth: false
