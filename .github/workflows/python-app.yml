@@ -35,4 +35,10 @@ jobs:
     - name: autotests
       run: |
         pip install pytest-cov
-        pytest --cov=kursownia tests/ --cov-report=xml --junitxml=junit/test-report.xml
+        pytest --cov=Kursownia tests/ --cov-report=xml --junitxml=junit/test-report.xml
+    - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: |
+            junit/test-report.xml
