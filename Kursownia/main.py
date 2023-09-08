@@ -8,7 +8,7 @@ from rates.rate_getter import request_euro_rate, request_dollar_rate
 logger = telebot.logger
 telebot.logger.setLevel(logging.INFO)  # Outputs debug messages to console.
 
-bot = AsyncTeleBot("6693432806:AAGu7LPbIn-Ge98CARF17SvR3m3VGE-hDsQ", parse_mode=None)
+bot = AsyncTeleBot("TOKEN", parse_mode=None)
 
 
 @bot.message_handler(commands=['start', 'help'])
