@@ -3,6 +3,7 @@ import telebot
 import aioschedule
 from telebot.async_telebot import AsyncTeleBot
 import logging
+from rates.rate_getter import request_euro_rate, request_dollar_rate
 
 logger = telebot.logger
 telebot.logger.setLevel(logging.INFO)  # Outputs debug messages to console.
@@ -10,30 +11,19 @@ telebot.logger.setLevel(logging.INFO)  # Outputs debug messages to console.
 bot = AsyncTeleBot("TOKEN", parse_mode=None)
 
 
-async def beep(chat_id) -> None:
-    """Send the beep message."""
-    await bot.send_message(chat_id, text='Beep!')
-    aioschedule.clear(chat_id)  # return schedule.CancelJob not working in aioschedule use tag for delete
-
-
-@bot.message_handler(commands=['help', 'start'])
+@bot.message_handler(commands=['start', 'help'])
 async def send_welcome(message):
-    await bot.reply_to(message, "Hi! Use /set <seconds> to set a timer")
+    await message.reply("Hello, I'm Kursownia!")
 
 
-@bot.message_handler(commands=['set'])
-async def set_timer(message):
-    args = message.text.split()
-    if len(args) > 1 and args[1].isdigit():
-        sec = int(args[1])
-        aioschedule.every(sec).seconds.do(beep, message.chat.id).tag(message.chat.id)
-    else:
-        await bot.reply_to(message, 'Usage: /set <seconds>')
+@bot.message_handler(commands=['euro'])
+async def send_euro_rate(message):
+    await message.reply(f'Current euro rate: {request_euro_rate()}')
 
+@bot.message_handler(commands=['dollar'])
+async def send_dollar_rate(message):
+    await message.reply(f'Current dollar rate: {request_dollar_rate()}')
 
-@bot.message_handler(commands=['unset'])
-def unset_timer(message):
-    aioschedule.clean(message.chat.id)
 
 
 async def scheduler():
