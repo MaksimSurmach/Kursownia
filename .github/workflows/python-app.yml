@@ -35,4 +35,4 @@ jobs:
     - name: autotests
       run: |
         pip install pytest-cov
-        pytest --cov=kursownia tests/ --cov-report=tests/test_report.xml
+        pytest --cov=kursownia tests/ --cov-report=xml --junitxml=junit/test-report.xml
