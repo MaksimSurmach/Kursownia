@@ -43,7 +43,7 @@ class Storage():
 
             elif currency == 'EUR':
                 try:
-                    data = rate_getter.get_croos_rates()
+                    data = rate_getter.get_crosshatches()
                 except Exception as e:
                     # if any error occurs, skip this currency
                     print(f"Error while updating rates {currency}")

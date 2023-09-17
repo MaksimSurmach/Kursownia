@@ -15,3 +15,4 @@ def generate_keyboard(currency_list: list, amount: float):
                 break
         keyboard.add(*row)
     return keyboard
+
