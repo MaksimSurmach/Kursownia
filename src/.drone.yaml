@@ -31,7 +31,7 @@ steps:
 trigger:
   branch:
   - master
-  - develop
+#  - develop
   event:
     include:
     - push
