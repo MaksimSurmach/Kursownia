@@ -9,7 +9,7 @@ steps:
     username: maxsurm
     password:
       from_secret: docker_password
-    repo: maxsurm/ranus
+    repo: maxsurm/kursownia
     tags: ${DRONE_COMMIT_SHA}
     dockerfile: src/Dockerfile
 

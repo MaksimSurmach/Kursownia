@@ -6,7 +6,7 @@ namespace: kursownia
 replicaCount: 1
 
 image:
-  repository: maxsurm/ranus
+  repository: maxsurm/kursownia
   tag: "latest"
 
 imagePullSecrets:
