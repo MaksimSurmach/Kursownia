@@ -6,8 +6,8 @@ def request_pln_euro_rate():
     return {
         'name': response.json()['currency'],
         'code': response.json()['code'],
-        'buy': response.json()['rates'][0]['bid'],
-        'sell': response.json()['rates'][0]['ask']
+        'buy': float(response.json()['rates'][0]['bid']),
+        'sell': float(response.json()['rates'][0]['ask'])
     }
 
 def request_pln_dollar_rate():
@@ -15,11 +15,11 @@ def request_pln_dollar_rate():
     return {
         'name': response.json()['currency'],
         'code': response.json()['code'],
-        'buy': response.json()['rates'][0]['bid'],
-        'sell': response.json()['rates'][0]['ask']
+        'buy': float(response.json()['rates'][0]['bid']),
+        'sell': float(response.json()['rates'][0]['ask'])
     }
 
-def request_blr_rates():
+def request_BYN_rates():
     response = requests.get('https://belapb.by/CashExRatesDaily.php')
     response = xmltodict.parse(response.text)
     data = {}
@@ -28,8 +28,8 @@ def request_blr_rates():
             data[currency['CharCode']] = {
                 'code': currency['CharCode'],
                 'name': currency['Name'],
-                'buy': currency['RateBuy'],
-                'sell': currency['RateSell']
+                'buy': float(currency['RateBuy']) / float(currency['Scale']),
+                'sell': float(currency['RateSell']) / float(currency['Scale'])
             }
     return data
 
@@ -40,8 +40,8 @@ def get_croos_rates():
     data = {}
     for currency in response['rates']:
         if currency['sellIso'] == 'EUR' and currency['buyIso'] == 'USD':
-            data[currency['sellIso']] = currency['sellRate']
-            data[currency['buyIso']] = currency['buyRate']
+            data[currency['sellIso']] = float(currency['sellRate'])
+            data[currency['buyIso']] = float(currency['buyRate'])
 
     return data
 

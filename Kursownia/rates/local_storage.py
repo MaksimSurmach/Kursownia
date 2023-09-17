@@ -3,8 +3,8 @@ from Kursownia.currency.models import Currency
 
 class Storage():
     def __init__(self):
-        self.currencies = ['EUR', 'USD', 'PLN', 'BLR']
-        self.updated_currencies = ['PLN', 'BLR', 'EUR']
+        self.currencies = ['EUR', 'USD', 'PLN', 'BYN']
+        self.updated_currencies = ['PLN', 'BYN', 'EUR']
         for currency in self.currencies:
             setattr(self, currency, Currency(currency))
         self.update_rates()
@@ -12,38 +12,47 @@ class Storage():
     def update_rates(self):
         for currency in self.updated_currencies:
             if currency == 'PLN':
-                uero = rate_getter.request_pln_euro_rate()
-                dollar = rate_getter.request_pln_dollar_rate()
-                getattr(self, currency).update_currency('EUR', uero['buy'], uero['sell'])
-                getattr(self, currency).update_currency('USD', dollar['buy'], dollar['sell'])
-                getattr(self, 'USD').update_currency('PLN', dollar['sell'], dollar['buy'])
-                getattr(self, 'EUR').update_currency('PLN', uero['sell'], uero['buy'])
-            elif currency == 'BLR':
-                data = rate_getter.request_blr_rates()
+                try:
+                    uero = rate_getter.request_pln_euro_rate()
+                    dollar = rate_getter.request_pln_dollar_rate()
+                except Exception as e:
+                    print(f"Error while updating rates {currency}")
+                    print(e)
+                    continue
+                getattr(self, 'PLN').set_rate('EUR', 1/uero['sell'])
+                getattr(self, 'PLN').set_rate('USD', 1/dollar['sell'])
+                getattr(self, 'EUR').set_rate('PLN', uero['buy'])
+                getattr(self, 'USD').set_rate('PLN', dollar['buy'])
+            elif currency == 'BYN':
+                try:
+                    data = rate_getter.request_BYN_rates()
+                except Exception as e:
+                    print(f"Error while updating rates {currency}")
+                    print(e)
+                    continue
                 for cur in data:
-                    getattr(self, 'BLR').update_currency(data[cur]['code'], data[cur]['buy'], data[cur]['sell'])
-                    getattr(self, data[cur]['code']).update_currency(currency, data[cur]['sell'], data[cur]['buy'])
-            elif currency == 'EUR':
-                data = rate_getter.get_croos_rates()
-                getattr(self, 'EUR').update_currency('USD', data['USD'], data['EUR'])
-                getattr(self, 'USD').update_currency('EUR', data['EUR'], data['USD'])
+                    getattr(self, 'BYN').set_rate(cur, 1/data[cur]['buy'])
+                    getattr(self, cur).set_rate('BYN', data[cur]['sell'])
 
+            elif currency == 'EUR':
+                try:
+                    data = rate_getter.get_croos_rates()
+                except Exception as e:
+                    print(f"Error while updating rates {currency}")
+                    print(e)
+                    continue
+                getattr(self, 'EUR').set_rate('USD', data['USD'])
+                getattr(self, 'USD').set_rate('EUR', 1/data['EUR'])
         return True
 
     def get_rate(self, sold_code: str, bought_code: str):
-        return getattr(self, sold_code).get_buy_rate(bought_code)
+        return getattr(self, sold_code).get_rate(bought_code)
 
     def get_currency(self, code: str):
         return getattr(self, code)
 
-    def get_currency_code(self, code: str):
-        return getattr(self, code).get_currency_code()
-
-    def get_buy_rate(self, sold_code: str, bought_code: str):
-        return getattr(self, sold_code).get_buy_rate(bought_code)
-
-    def get_sell_rate(self, sold_code: str, bought_code: str):
-        return getattr(self, sold_code).get_sell_rate(bought_code)
+    def calculate(self, sold_code: str, bought_code: str, amount: float):
+        return getattr(self, sold_code).calc_rate(bought_code, amount)
 
 
 

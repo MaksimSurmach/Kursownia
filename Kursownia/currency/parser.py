@@ -11,11 +11,11 @@ class TextToCurrencyParser:
                 'злотых', 'злот', 'зл', 'зло', 'злут', 'пол', 'пл', 'pl', 'pol'],
         'UAH': ['UAH', 'grivna', 'uah', 'grivna', 'grivny', 'griven', 'griven', '₴', 'гривен', 'гривен', 'гривен', 'гривен',
                 'гривен', 'грив', 'грв', 'гр'],
-        'BYN': ['BYN', 'rubl', 'rub', 'rubl', 'rublya', 'rubley', 'rubley', '₽', 'рублей', 'рублей', 'рублей', 'рублей',
+        'BYN': ['BYN', 'byn', 'rubl', 'rub', 'rubl', 'rublya', 'rubley', 'rubley', '₽', 'рублей', 'рублей', 'рублей', 'рублей',
                 'рублей', 'белорусски', 'белок', 'рубл', 'бел', 'бл', 'беларус', 'блр', 'рбл', 'б', 'р']
     }
 
-    __amount_separator = [',', '.']
+    __amount_separator = ['.']
 
     def __init__(self, text):
         self.text = text
@@ -41,15 +41,8 @@ class TextToCurrencyParser:
         for char in text:
             if not char.isdigit() and char not in self.__amount_separator:
                 text = text.replace(char, '')
-        # find number delimeter lik ',' '.'
-        for separator in self.__amount_separator:
-            if separator in text:
-                text = text.split(separator)[0]
-                break
-        if text.isdigit():
-            self.amount = int(text)
-            return int(text)
-        return None
+        self.amount = float(text)
+        return float(text)
 
     def __str__(self):
         return str(f"{self.amount} {self.currency}")
