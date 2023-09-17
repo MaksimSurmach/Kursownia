@@ -2,10 +2,10 @@ FROM python:3.11.5-bullseye
 
 WORKDIR /app
 
-COPY requirements.txt .
-
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install poetry
 
 COPY . .
 
-CMD ["python", "Kursownia/main.py"]
+RUN poetry install
+
+CMD ["poetry", "run", "python", "Kursownia/main.py"]
