@@ -1,5 +1,8 @@
 import asyncio
 import os
+
+from Kursownia.currency.parser import TextToCurrencyParser
+from Kursownia.keyboards import generate_keyboard
 from Kursownia.rates.local_storage import Storage
 import telebot
 import aioschedule
@@ -19,14 +22,7 @@ bot = AsyncTeleBot(TOKEN, parse_mode=None)
 
 storage = Storage()
 
-keywords = {
-    'USD': ['dollar', 'usd', 'dolar', 'dolara', 'dolary', 'dolarow', '$', 'баксов', 'бакс', 'долларов', 'доллар', 'доллара'],
-    'EUR': ['euro', 'eur', 'euro', 'euro', 'euro', 'euro', '€', 'евро', 'евро', 'евро', 'евро', 'евро'],
-    'PLN': ['zloty', 'pln', 'zloty', 'zlotego', 'zlotych', 'zlotow', 'zł', 'злотых', 'злотых', 'злотых', 'злотых', 'злотых'],
-    'RUB': ['rubl', 'rub', 'rubl', 'rublya', 'rubley', 'rubley', '₽', 'рублей', 'рублей', 'рублей', 'рублей', 'рублей'],
-    'UAH': ['grivna', 'uah', 'grivna', 'grivny', 'griven', 'griven', '₴', 'гривен', 'гривен', 'гривен', 'гривен', 'гривен'],
-    'BYN': ['rubl', 'rub', 'rubl', 'rublya', 'rubley', 'rubley', '₽', 'рублей', 'рублей', 'рублей', 'рублей', 'рублей', 'белорусски']
-}
+
 
 @bot.message_handler(commands=['start', 'help'])
 async def send_welcome(message):
@@ -34,31 +30,51 @@ async def send_welcome(message):
     '\n' + 'I am a bot that shows current exchange rates.' +
     '\n' + 'To see the current euro rate, type /euro' )
 
-
-@bot.message_handler(commands=storage.currencies, ignore_case=True)
-async def send_dollar_rate(message):
-    currency = message.text[1:]
-    logger.info(f'User {message.from_user.first_name} requested {currency} rate')
-    data = storage.get_currency(currency).get_all_rates()
-    text = f'Current {currency} rate is'
-    for curr in data:
+@bot.callback_query_handler(func=lambda call: True)
+async def callback_query(call):
+    logger.info(f'Requested: {call.data}')
+    currency, amount = call.data.split()
+    await bot.answer_callback_query(call.id, f"{amount} {currency}")
+    text = f'{amount} {currency} is'
+    for curr in storage.currencies:
         if curr == currency:
             continue
-        text += f'\n{curr}: {data[curr]["sell"]}'
-    await bot.reply_to(message, text)
+        text += f'\n{storage.calculate(currency, curr, float(amount))} {curr}'
+    await bot.send_message(call.message.chat.id, text)
 
-@bot.message_handler(ignore_case=True)
+@bot.message_handler(content_types=['text'])
 async def parse_text_to_currency(message):
-    logger.info(f'Requested {message.text}')
-    text = message.text.lower()
-    #remove all numbers from text
-    text = text.translate(str.maketrans('', '', string.digits))
-    for currency in keywords:
-        for keyword in keywords[currency]:
-            if keyword in text:
-                logger.info(f'User {message.from_user.first_name} requested {currency} rate')
-                await bot.reply_to(message, f'Resolve as {currency}')
+    logger.info(f'Requested: {message.text}')
+    result = TextToCurrencyParser(message.text.lower())
+    logger.info(f"Parse as currency: {result.currency}, as amount: {result.amount}")
+    if result.currency and result.amount:
+        text = f'{result.amount} {result.currency} is'
+        for curr in storage.currencies:
+            if curr == result.currency:
+                continue
+            text += f'\n{storage.calculate(result.currency, curr, result.amount)} {curr}'
+        await bot.reply_to(message, text)
 
+    elif not result.currency and result.amount:
+        #reply keyboard with all currencies
+        keyboard = generate_keyboard(storage.currencies, result.amount)
+        await bot.reply_to(message, 'Choose currency:', reply_markup=keyboard)
+
+    else:
+        await bot.reply_to(message, f'No currency found in your message. Please try again.')
+
+
+
+# @bot.message_handler(content_types=['text'])
+# async def send_echo(message):
+#     logger.info(f'Requested {message.text}')
+#     await bot.reply_to(message, message.text)
+
+
+# @aioschedule.every(1).minutes.do
+# async def update_rates_schedule():
+#     logger.info('Updating rates')
+#     storage.update_rates()
 
 
 async def scheduler():
