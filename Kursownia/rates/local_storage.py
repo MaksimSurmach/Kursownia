@@ -7,9 +7,10 @@ class Storage():
         self.updated_currencies = ['PLN', 'BYN', 'EUR']
         for currency in self.currencies:
             setattr(self, currency, Currency(currency))
-        self.update_rates()
+        # self.update_rates()
 
-    def update_rates(self):
+    async def update_rates(self):
+        print('Updating rates')
         for currency in self.updated_currencies:
             if currency == 'PLN':
                 try:
