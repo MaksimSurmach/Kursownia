@@ -19,12 +19,14 @@ steps:
   commands:
   - mkdir ~/.kube
   - echo $k8s_config | base64 -d > ~/.kube/config
-  - sed -i 's|<TOKEN>|'"${TOKEN}"'|g' src/helm/kursownia/values.yaml
+  - sed -i 's|<TOKEN>|'"$TOKEN"'|g' src/helm/kursownia/values.yaml
   - helm upgrade --install --set image.tag=${DRONE_COMMIT_SHA} --create-namespace --namespace=kursownia kursownia src/helm/kursownia
 
   environment:
     k8s_config:
       from_secret: k8s_config
+    TOKEN:
+      from_secret: TOKEN
 
 trigger:
   branch:
