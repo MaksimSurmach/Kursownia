@@ -2,7 +2,7 @@ import requests
 import xmltodict
 
 def request_pln_euro_rate():
-    response = requests.get('http://api.nbp.pl/api/exchangerates/rates/c/eur/today/?format=json')
+    response = requests.get('http://api.nbp.pl/api/exchangerates/rates/c/eur/?format=json')
     return {
         'name': response.json()['currency'],
         'code': response.json()['code'],
@@ -11,7 +11,7 @@ def request_pln_euro_rate():
     }
 
 def request_pln_dollar_rate():
-    response = requests.get('http://api.nbp.pl/api/exchangerates/rates/c/usd/today/?format=json')
+    response = requests.get('http://api.nbp.pl/api/exchangerates/rates/c/usd/?format=json')
     return {
         'name': response.json()['currency'],
         'code': response.json()['code'],
