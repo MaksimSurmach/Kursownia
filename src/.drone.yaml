@@ -20,7 +20,7 @@ steps:
   - mkdir ~/.kube
   - echo $k8s_config | base64 -d > ~/.kube/config
   - sed -i 's|<TOKEN>|'"${TOKEN}"'|g' src/helm/Kursownia/values.yaml
-  - helm upgrade --install --set image.tag=${DRONE_COMMIT_SHA} --namespace=kursownia kursownia helm/Kursownia
+  - helm upgrade --install --set image.tag=${DRONE_COMMIT_SHA} --namespace=kursownia kursownia src/helm/Kursownia
 
   environment:
     k8s_config:
