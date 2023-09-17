@@ -25,7 +25,7 @@ def request_pln_dollar_rate():
     }
 
 
-def request_BYN_rates():
+def request_byn_rates():
     # send request to NBRB API
     response = requests.get('https://belapb.by/CashExRatesDaily.php')
     # convert xml to dictionary

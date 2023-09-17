@@ -161,5 +161,6 @@ class MyTestCase(unittest.TestCase):
         self.assertIsNone(parser4.currency)
         self.assertEqual(parser4.amount, 50)
 
+
 if __name__ == '__main__':
     unittest.main()

@@ -1,4 +1,4 @@
-class Currency():
+class Currency:
     """
     Class representing currency.
     Currency has name and code.
@@ -16,7 +16,7 @@ class Currency():
 
     def set_rate(self, code: str, buy: float):
         # set rate for currency
-        buy = float(buy) # convert to float
+        buy = float(buy)  # convert to float
         if buy < 0:
             raise ValueError('Rate cannot be negative')
         if buy == 0:

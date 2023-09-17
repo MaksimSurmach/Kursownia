@@ -20,7 +20,7 @@ class TextToCurrencyParser:
     def __init__(self, text):
         # create class and set all attributes
         self.text = text
-        #when create a class, parse currency and amount
+        # when create a class, parse currency and amount
         self.currency = self.parse_currency()
         self.amount = self.parse_amount()
 

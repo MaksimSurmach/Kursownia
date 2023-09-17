@@ -2,10 +2,10 @@ import Kursownia.rates.rate_getter as rate_getter
 from Kursownia.currency.models import Currency
 
 
-class Storage():
+class Storage:
     def __init__(self):
-        self.currencies = ['EUR', 'USD', 'PLN', 'BYN'] # List of currencies
-        self.updated_currencies = ['PLN', 'BYN', 'EUR'] # List of currencies that need to be updated
+        self.currencies = ['EUR', 'USD', 'PLN', 'BYN']  # List of currencies
+        self.updated_currencies = ['PLN', 'BYN', 'EUR']  # List of currencies that need to be updated
         # Create currency objects for each currency
         for currency in self.currencies:
             setattr(self, currency, Currency(currency))
@@ -30,7 +30,7 @@ class Storage():
                 getattr(self, 'USD').set_rate('PLN', dollar['buy'])
             elif currency == 'BYN':
                 try:
-                    data = rate_getter.request_BYN_rates()
+                    data = rate_getter.request_byn_rates()
                 except Exception as e:
                     # if any error occurs, skip this currency
                     print(f"Error while updating rates {currency}")
