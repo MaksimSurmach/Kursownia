@@ -26,5 +26,5 @@ tolerations: []
 affinity: {}
 
 env:
-  - name: TG_TOKEN
-    TOKEN: <TOKEN>
+  - name: TOKEN
+    value: <TOKEN>
