@@ -107,32 +107,32 @@ class MyTestCase(unittest.TestCase):
 
         text6 = "I have $5.75"
         parser6 = TextToCurrencyParser(text6)
-        self.assertEqual(parser6.amount, 5)
+        self.assertEqual(parser6.amount, 5.75)
         self.assertEqual(parser6.currency, 'USD')
 
         text7 = "20.5€ for a movie ticket"
         parser7 = TextToCurrencyParser(text7)
-        self.assertEqual(parser7.amount, 20)
+        self.assertEqual(parser7.amount, 20.5)
         self.assertEqual(parser7.currency, 'EUR')
 
         text8 = "10.75 гривен"
         parser8 = TextToCurrencyParser(text8)
-        self.assertEqual(parser8.amount, 10)
+        self.assertEqual(parser8.amount, 10.75)
         self.assertEqual(parser8.currency, 'UAH')
 
         text9 = "15.99 rubles"
         parser9 = TextToCurrencyParser(text9)
-        self.assertEqual(parser9.amount, 15)
+        self.assertEqual(parser9.amount, 15.99)
         self.assertEqual(parser9.currency, 'BYN')
 
         text10 = "I have 10.5 EUR"
         parser10 = TextToCurrencyParser(text10)
-        self.assertEqual(parser10.amount, 10)
+        self.assertEqual(parser10.amount, 10.5)
         self.assertEqual(parser10.currency, 'EUR')
 
         text11 = "50.75 yuan"
         parser11 = TextToCurrencyParser(text11)
-        self.assertEqual(parser11.amount, 50)
+        self.assertEqual(parser11.amount, 50.75)
         self.assertIsNone(parser11.currency)
 
         text12 = "No amount mentioned"
