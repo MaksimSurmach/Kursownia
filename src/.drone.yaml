@@ -11,6 +11,8 @@ steps:
       from_secret: docker_password
     repo: maxsurm/ranus
     tags: ${DRONE_COMMIT_SHA}
+    dockerfile: src/Dockerfile
+
 
 - name: helm_deploy
   image: alpine/k8s:1.24.13
