@@ -22,8 +22,6 @@ bot = AsyncTeleBot(TOKEN, parse_mode=None)
 # Create the storage object
 storage = Storage()
 
-# Get version of the bot
-VERSION = Kursownia.__version__()
 
 async def scheduler():
     while True:
@@ -48,5 +46,5 @@ async def main():
 
 if __name__ == '__main__':
     # Run the main function as an async function in an asyncio loop
-    print(f"Bot version: {VERSION}")
+    print(f"Kursownia versions: {Kursownia.__version__()}")
     asyncio.run(main())
