@@ -1,6 +1,12 @@
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from telebot import formatting
 
+EMOJI = {
+    "USD": "🇺🇸",
+    "EUR": "🇪🇺",
+    "PLN": "🇵🇱",
+    "BYN": "🇧🇾",
+}
 
 def generate_keyboard(currency_list: list, amount: float):
     """
@@ -29,14 +35,12 @@ def message_template(amount: float, currency: str, storage):
     """
     Generate message with all currencies
     """
-    text_header = f'{amount} {currency} is'
     text_body = ''
     for curr in storage.currencies:
         if curr == currency:
             continue
-        text_body += f'{curr} - {storage.calculate(currency, curr, amount)}\n'
+        text_body += f'{EMOJI[curr]}  {storage.calculate(currency, curr, amount)}\n'
     return formatting.format_text(
-        formatting.mbold(text_header),
-        formatting.mcode(text_body),
+        formatting.mbold(text_body),
         separator='\n'
     )
