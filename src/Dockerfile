@@ -8,4 +8,4 @@ COPY . .
 
 RUN poetry install
 
-CMD ["poetry", "run", "python", "-m", "Kursownia.main"]
+CMD ["poetry", "run", "python", "Kursownia/main.py"]
