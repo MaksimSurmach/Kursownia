@@ -5,7 +5,7 @@ from telebot import formatting
 from Kursownia.currency.parser import TextToCurrencyParser
 from Kursownia.responses import generate_keyboard, message_template
 from Kursownia.rates.local_storage import Storage
-
+import Kursownia
 
 async def update_bot_commands(bot: AsyncTeleBot):
     # remove old commands from telegram server
@@ -57,11 +57,11 @@ async def bot_default_commands(bot: AsyncTeleBot):
     @bot.message_handler(commands=['help'])
     async def send_help(message):
         await bot.reply_to(message, formatting.format_text(
+            formatting.mbold("Version: " + Kursownia.__version__() + "\n"),
             formatting.mbold("How to use the bot:\n"),
             "type amount and currency name, for example:\n",
             formatting.munderline("100 usd\n"),
             "or type amount and then choose currency from the list",
-            formatting.mcode("in dev stage"),
             separator=" "
         ),
                            parse_mode='MarkdownV2')
@@ -78,6 +78,7 @@ async def main_parser(bot: AsyncTeleBot, storage: Storage):
         # await bot.answer_callback_query(call.id, f"{amount} {currency}") # debug
         msg = message_template(float(amount), currency, storage)
         # prepare message and send it
+        await bot.answer_callback_query(call.id, f"Converted {amount} {currency}")
         await bot.send_message(call.message.chat.id, msg, parse_mode='MarkdownV2')
 
     @bot.message_handler(content_types=['text'])

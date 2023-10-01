@@ -1,4 +1,5 @@
 import os
+import Kursownia
 from Kursownia.commands import update_bot_commands, bot_default_commands, main_parser
 from Kursownia.rates.local_storage import Storage
 import telebot
@@ -21,6 +22,8 @@ bot = AsyncTeleBot(TOKEN, parse_mode=None)
 # Create the storage object
 storage = Storage()
 
+# Get version of the bot
+VERSION = Kursownia.__version__()
 
 async def scheduler():
     while True:
@@ -45,4 +48,5 @@ async def main():
 
 if __name__ == '__main__':
     # Run the main function as an async function in an asyncio loop
+    print(f"Bot version: {VERSION}")
     asyncio.run(main())
