@@ -4,8 +4,12 @@ WORKDIR /app
 
 RUN pip install poetry
 
+COPY pyproject.toml poetry.lock ./
+
+
+RUN poetry config virtualenvs.create false
+RUN poetry install --no-root --no-dev
+
 COPY . .
-
-RUN poetry install
-
-CMD ["poetry", "run", "python", "Kursownia/main.py"]
+ENV PYTHONPATH="${PYTHONPATH}:/app"
+CMD ["python", "Kursownia/main.py"]

@@ -48,5 +48,5 @@ async def main():
 
 if __name__ == '__main__':
     # Run the main function as an async function in an asyncio loop
-    print(f"Bot version: {VERSION}")
+    print(f"Kursownia versions: {Kursownia.__version__()}")
     asyncio.run(main())
