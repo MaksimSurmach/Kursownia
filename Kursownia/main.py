@@ -22,6 +22,8 @@ bot = AsyncTeleBot(TOKEN, parse_mode=None)
 # Create the storage object
 storage = Storage()
 
+# Get version of the bot
+VERSION = Kursownia.__version__()
 
 async def scheduler():
     while True:
