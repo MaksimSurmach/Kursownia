@@ -1,0 +1,30 @@
+labels:
+  app: kursownia-bot
+
+namespace: kursownia
+
+replicaCount: 1
+
+image:
+  repository: maxsurm/kursownia
+  tag: "latest"
+
+imagePullSecrets:
+  - name: regcred
+nameOverride: ""
+fullnameOverride: ""
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 50Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+env:
+  - name: TOKEN
+    value: <TOKEN>

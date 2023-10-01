@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "kursownia"
-version = "0.0.1"
+version = "1.0.0"
 description = "Telegram bot for check currency exchange rate"
 authors = ["Maksim Surmach <maxsurm@gmail.com>"]
 license = "MIT"
@@ -9,9 +9,11 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.11"
 pytelegrambotapi = "^4.13.0"
-pydantic = "^2.3.0"
 aiohttp = "^3.8.5"
-aioschedule = "^0.5.2"
+pytest = "^7.4.2"
+xmltodict = "^0.13.0"
+telebot = "^0.0.5"
+python-dotenv = "^1.0.0"
 
 
 [build-system]

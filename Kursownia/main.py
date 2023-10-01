@@ -1,50 +1,52 @@
-import asyncio
+import os
+import Kursownia
+from Kursownia.commands import update_bot_commands, bot_default_commands, main_parser
+from Kursownia.rates.local_storage import Storage
 import telebot
-import aioschedule
+import asyncio
 from telebot.async_telebot import AsyncTeleBot
+from dotenv import load_dotenv
 import logging
 
+# Create logger
 logger = telebot.logger
 telebot.logger.setLevel(logging.INFO)  # Outputs debug messages to console.
+load_dotenv()
 
-bot = AsyncTeleBot("TOKEN", parse_mode=None)
+# Get the token from the environment variable
+TOKEN = os.getenv('TOKEN')
 
+# Create the bot object
+bot = AsyncTeleBot(TOKEN, parse_mode=None)
 
-async def beep(chat_id) -> None:
-    """Send the beep message."""
-    await bot.send_message(chat_id, text='Beep!')
-    aioschedule.clear(chat_id)  # return schedule.CancelJob not working in aioschedule use tag for delete
+# Create the storage object
+storage = Storage()
 
-
-@bot.message_handler(commands=['help', 'start'])
-async def send_welcome(message):
-    await bot.reply_to(message, "Hi! Use /set <seconds> to set a timer")
-
-
-@bot.message_handler(commands=['set'])
-async def set_timer(message):
-    args = message.text.split()
-    if len(args) > 1 and args[1].isdigit():
-        sec = int(args[1])
-        aioschedule.every(sec).seconds.do(beep, message.chat.id).tag(message.chat.id)
-    else:
-        await bot.reply_to(message, 'Usage: /set <seconds>')
-
-
-@bot.message_handler(commands=['unset'])
-def unset_timer(message):
-    aioschedule.clean(message.chat.id)
-
+# Get version of the bot
+VERSION = Kursownia.__version__()
 
 async def scheduler():
     while True:
-        await aioschedule.run_pending()
-        await asyncio.sleep(1)
+        # Update rates every 6 hours
+        await storage.update_rates()
+        await asyncio.sleep(60 * 60 * 6)
 
 
 async def main():
+    # Update bot commands in telegram
+    await update_bot_commands(bot)
+
+    # Default commands like start and help
+    await bot_default_commands(bot)
+
+    # Main text parser
+    await main_parser(bot, storage)
+
+    # Infinite loop to keep the bot running even when idle
     await asyncio.gather(bot.infinity_polling(), scheduler())
 
 
 if __name__ == '__main__':
+    # Run the main function as an async function in an asyncio loop
+    print(f"Bot version: {VERSION}")
     asyncio.run(main())

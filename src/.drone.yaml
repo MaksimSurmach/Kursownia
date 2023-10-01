@@ -1,0 +1,37 @@
+kind: pipeline
+name: Build and Deploy
+type: kubernetes
+
+steps:
+- name: build
+  image: plugins/docker
+  settings:
+    username: maxsurm
+    password:
+      from_secret: docker_password
+    repo: maxsurm/kursownia
+    tags: ${DRONE_COMMIT_SHA}
+    dockerfile: src/Dockerfile
+
+
+- name: helm_deploy
+  image: alpine/k8s:1.24.13
+  commands:
+  - mkdir ~/.kube
+  - echo $k8s_config | base64 -d > ~/.kube/config
+  - sed -i 's|<TOKEN>|'"$TOKEN"'|g' src/helm/kursownia/values.yaml
+  - helm upgrade --install --set image.tag=${DRONE_COMMIT_SHA} --create-namespace --namespace=kursownia kursownia src/helm/kursownia
+
+  environment:
+    k8s_config:
+      from_secret: k8s_config
+    TOKEN:
+      from_secret: TOKEN
+
+trigger:
+  branch:
+  - master
+  event:
+    include:
+    - push
+    - custom
